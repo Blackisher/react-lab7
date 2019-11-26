@@ -34,38 +34,25 @@ class App extends Component {
 
 
     handleOnChangeEmail(ev) {
+         const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
          this.setState({
-            email: ev.target.value
+            email: ev.target.value,
+            emailValid: re.test(ev.target.value)
         })
         console.log("Value changed age: " + ev.target.value)
-    }
-
-    validateEmail(){
-        //LAB7Task3 E-mail (figure out how email should be validated). Validation should be run when submit button is pressed.
-        //regexp from https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
-        const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
-        this.setState({
-            emailValid: re.test(this.state.email)
-        })
     }
 
     handleOnChangePhone(ev) {
+        const re = /^([0-9\b]{9})$/;
         this.setState({
-            phone: ev.target.value
+            phone: ev.target.value,
+            phoneValid: re.test(ev.target.value)
         })
         console.log("Value changed age: " + ev.target.value)
     }
 
-    validatePhone(){
-        //LAB7Task3  Validate fields Phone Number (can only contain digits and it has to be exactly 9 digits),
-        const re = /^([0-9\b]{9})$/;
-        this.setState({
-            phoneValid: re.test(this.state.phone)
-        })
-    }
-
     handleClickOnSubmit(ev) {
-        this.state.age > 18 ? this.validateEmail() : this.validatePhone();
+        //no need for validation
     }
 
     emailValidWarning(){
@@ -121,7 +108,10 @@ class App extends Component {
             <hr/>
             Age<input type="number" onChange={this.handleOnChangeAge} value={this.state.age}/><br/>
             {this.state.age > 18 ? this.grownup() : this.underage()}<br/>
-            <input type="button" onClick={this.handleClickOnSubmit} value="submit"/>
+            <input type="button" onClick={this.handleClickOnSubmit} value="submit"
+                   disabled={
+                       ((this.state.age > 18) && !this.state.emailValid) ||
+                       ((!(this.state.age > 18)) && !this.state.phoneValid)}/>
         </div>)
     };
 }
