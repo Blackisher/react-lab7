@@ -6,8 +6,10 @@ class App extends Component {
         super(props);
         this.state = {
             employee: [],
+            age: 0,
             isLoading: false
         }
+        this.handleOnChangeAge = this.handleOnChangeAge.bind(this)
     }
 
     componentDidMount() {
@@ -23,6 +25,30 @@ class App extends Component {
           .then(()=>this.setState({isLoading: false}));
     }
 
+    grownup() {
+        return <>
+                Name <input/><br/>
+                Email <input/>
+            </>
+    }
+
+    underage() {
+        return <>
+            Parent Name <input/><br/>
+            Parent Phone No <input/>
+        </>
+    }
+
+    handleOnChangeAge(ev) {
+        const re = /^([0-9\b]|[1-9\b][0-9\b]+)$/;
+        if (re.test(ev.target.value)) {
+            this.setState({
+                age: ev.target.value
+            })
+            console.log("Value changed age: " + ev.target.value)
+        }
+    }
+
     render() {
         return (<div>
             LAB7task1
@@ -35,6 +61,13 @@ class App extends Component {
                 this.state.employee.map(employee =>
                   <li className={`active${employee.isActive}`} key={employee._id}>{employee.name}, {employee.age}</li>
                 )}
+            <hr/>
+            LAB7task2
+            Create React form as displayed on screen two and three. If age is &lt 18 then labels should read ‘Parent
+            Name’ and Parent Phone No. If Age >= 18 then they should read Name and Email.
+            <hr/>
+            Age<input type="number" onChange={this.handleOnChangeAge} value={this.state.age}/><br/>
+            {this.state.age > 18 ? this.grownup() : this.underage()}
         </div>)
     };
 }
