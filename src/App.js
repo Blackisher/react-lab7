@@ -7,9 +7,16 @@ class App extends Component {
         this.state = {
             employee: [],
             age: 0,
+            email: 'example@email.com',
+            emailValid: true,
+            phone: 123456789,
+            phoneValid: true,
             isLoading: false
         }
         this.handleOnChangeAge = this.handleOnChangeAge.bind(this)
+        this.handleOnChangeEmail = this.handleOnChangeEmail.bind(this)
+        this.handleOnChangePhone = this.handleOnChangePhone.bind(this)
+        this.handleClickOnSubmit = this.handleClickOnSubmit.bind(this)
     }
 
     componentDidMount() {
@@ -25,17 +32,63 @@ class App extends Component {
           .then(()=>this.setState({isLoading: false}));
     }
 
+
+    handleOnChangeEmail(ev) {
+         this.setState({
+            email: ev.target.value
+        })
+        console.log("Value changed age: " + ev.target.value)
+    }
+
+    validateEmail(){
+        //LAB7Task3 E-mail (figure out how email should be validated). Validation should be run when submit button is pressed.
+        //regexp from https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+        const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
+        this.setState({
+            emailValid: re.test(this.state.email)
+        })
+    }
+
+    handleOnChangePhone(ev) {
+        this.setState({
+            phone: ev.target.value
+        })
+        console.log("Value changed age: " + ev.target.value)
+    }
+
+    validatePhone(){
+        //LAB7Task3  Validate fields Phone Number (can only contain digits and it has to be exactly 9 digits),
+        const re = /^([0-9\b]{9})$/;
+        this.setState({
+            phoneValid: re.test(this.state.phone)
+        })
+    }
+
+    handleClickOnSubmit(ev) {
+        this.state.age > 18 ? this.validateEmail() : this.validatePhone();
+    }
+
+    emailValidWarning(){
+        return <>{this.state.emailValid ? "" : "Email is not valid!"}</>
+    }
+
     grownup() {
         return <>
                 Name <input/><br/>
-                Email <input/>
+                Email <input type="text" onChange={this.handleOnChangeEmail} value={this.state.email}/> {this.emailValidWarning()}
+                {/*and  If validation fails there should be a text with explanation under or next to the validated field.*/}
             </>
+    }
+
+    phoneValidWarning(){
+        return <>{this.state.phoneValid ? "" : "Phone is not valid! (can only contain digits and it has to be exactly 9 digits)"}</>
     }
 
     underage() {
         return <>
             Parent Name <input/><br/>
-            Parent Phone No <input/>
+            Parent Phone No <input type="phone" onChange={this.handleOnChangePhone} value={this.state.phone}/> {this.phoneValidWarning()}
+            {/*and  If validation fails there should be a text with explanation under or next to the validated field.*/}
         </>
     }
 
@@ -67,7 +120,8 @@ class App extends Component {
             Name’ and Parent Phone No. If Age >= 18 then they should read Name and Email.
             <hr/>
             Age<input type="number" onChange={this.handleOnChangeAge} value={this.state.age}/><br/>
-            {this.state.age > 18 ? this.grownup() : this.underage()}
+            {this.state.age > 18 ? this.grownup() : this.underage()}<br/>
+            <input type="button" onClick={this.handleClickOnSubmit} value="submit"/>
         </div>)
     };
 }
